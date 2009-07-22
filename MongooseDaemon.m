@@ -47,45 +47,26 @@
 
 @synthesize ctx;
 
-
-- (void)threadMain
-{
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-
-  [runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
-   while(true) {
-     [runLoop run]; 
-   }
-   [pool release];
-}
-
 - (void)startHTTP:(NSString *)ports
 {
-  ctx = mg_start();     // Start Mongoose serving thread
+  self.ctx = mg_start();     // Start Mongoose serving thread
   mg_set_option(ctx, "root", [DOCUMENTS_FOLDER UTF8String]);  // Set document root
   mg_set_option(ctx, "ports", [ports UTF8String]);    // Listen on port XXXX
   //mg_bind_to_uri(ctx, "/foo", &bar, NULL); // Setup URI handler
 
   // Now Mongoose is up, running and configured.
   // Serve until somebody terminates us
-  NSLog(@"Server should be running");
-  for (;;)
-    getchar();
+  NSLog(@"Mongoose Server is running");
 }
 
 - (void)startMongooseDaemon:(NSString *)ports;
 {
-  httpThread = [[NSThread alloc] initWithTarget:self selector:@selector(threadMain) object:nil];
-  [httpThread start];
-  [self performSelector:@selector(startHTTP:) onThread:httpThread withObject:ports waitUntilDone:NO];
+  [self startHTTP:ports];
 }
 
 - (void)stopMongooseDaemon
 {
   mg_stop(ctx);
-  [httpThread cancel];
-  [httpThread release];
 }
 
 @end

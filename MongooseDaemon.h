@@ -40,7 +40,6 @@
 #import "mongoose.h"
 
 @interface MongooseDaemon : NSObject {
-  NSThread    *httpThread;
   struct mg_context *ctx;
 }
 
