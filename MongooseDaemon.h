@@ -41,8 +41,10 @@
 
 @interface MongooseDaemon : NSObject {
   NSThread    *httpThread;
-  struct mg_context *mongoose;
+  struct mg_context *ctx;
 }
+
+@property (readwrite)          struct mg_context *ctx;
 
 - (void)startMongooseDaemon:(NSString *)ports;
 - (void)stopMongooseDaemon;
