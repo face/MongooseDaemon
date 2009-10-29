@@ -39,6 +39,9 @@
 // with iPhone apps super easy
 
 #import "MongooseDaemon.h"
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 
 //#define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 #define DOCUMENTS_FOLDER NSHomeDirectory()
@@ -46,6 +49,31 @@
 @implementation MongooseDaemon
 
 @synthesize ctx;
+
+
+// Return the localized IP address - From Erica Sadun's cookbook
+- (NSString *) localIPAddress
+{
+	char baseHostName[255];
+	gethostname(baseHostName, 255);
+	
+	// Adjust for iPhone -- add .local to the host name
+	char hn[255];
+	sprintf(hn, "%s.local", baseHostName);
+	
+	struct hostent *host = gethostbyname(hn);
+    if (host == NULL)
+	{
+        herror("resolv");
+		return NULL;
+	}
+    else {
+        struct in_addr **list = (struct in_addr **)host->h_addr_list;
+		return [NSString stringWithCString:inet_ntoa(*list[0])];
+    }
+	
+	return NULL;
+}
 
 - (void)startHTTP:(NSString *)ports
 {
@@ -56,7 +84,7 @@
 
   // Now Mongoose is up, running and configured.
   // Serve until somebody terminates us
-  NSLog(@"Mongoose Server is running");
+  NSLog(@"Mongoose Server is running on http://%@:8080", [self localIPAddress]);
 }
 
 - (void)startMongooseDaemon:(NSString *)ports;
