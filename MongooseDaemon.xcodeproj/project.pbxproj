@@ -1,0 +1,249 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AC74843F16A6262400517C30 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC74843E16A6262400517C30 /* Foundation.framework */; };
+		AC74845216A626A500517C30 /* mongoose.c in Sources */ = {isa = PBXBuildFile; fileRef = AC74844D16A626A500517C30 /* mongoose.c */; };
+		AC74845316A626A500517C30 /* MongooseDaemon.m in Sources */ = {isa = PBXBuildFile; fileRef = AC74845016A626A500517C30 /* MongooseDaemon.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AC74843916A6262400517C30 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/${PRODUCT_NAME}";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		AC74843B16A6262400517C30 /* libMongooseDaemon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMongooseDaemon.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC74843E16A6262400517C30 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AC74844216A6262400517C30 /* MongooseDaemon-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MongooseDaemon-Prefix.pch"; sourceTree = "<group>"; };
+		AC74844C16A626A500517C30 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		AC74844D16A626A500517C30 /* mongoose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mongoose.c; sourceTree = "<group>"; };
+		AC74844E16A626A500517C30 /* mongoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mongoose.h; sourceTree = "<group>"; };
+		AC74844F16A626A500517C30 /* MongooseDaemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MongooseDaemon.h; sourceTree = "<group>"; };
+		AC74845016A626A500517C30 /* MongooseDaemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MongooseDaemon.m; sourceTree = "<group>"; };
+		AC74845116A626A500517C30 /* README.rdoc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.rdoc; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AC74843816A6262400517C30 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AC74843F16A6262400517C30 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AC74843016A6262400517C30 = {
+			isa = PBXGroup;
+			children = (
+				AC74844016A6262400517C30 /* MongooseDaemon */,
+				AC74843D16A6262400517C30 /* Frameworks */,
+				AC74843C16A6262400517C30 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AC74843C16A6262400517C30 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AC74843B16A6262400517C30 /* libMongooseDaemon.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AC74843D16A6262400517C30 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AC74843E16A6262400517C30 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AC74844016A6262400517C30 /* MongooseDaemon */ = {
+			isa = PBXGroup;
+			children = (
+				AC74844C16A626A500517C30 /* LICENSE */,
+				AC74844D16A626A500517C30 /* mongoose.c */,
+				AC74844E16A626A500517C30 /* mongoose.h */,
+				AC74844F16A626A500517C30 /* MongooseDaemon.h */,
+				AC74845016A626A500517C30 /* MongooseDaemon.m */,
+				AC74845116A626A500517C30 /* README.rdoc */,
+				AC74844116A6262400517C30 /* Supporting Files */,
+			);
+			path = MongooseDaemon;
+			sourceTree = "<group>";
+		};
+		AC74844116A6262400517C30 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AC74844216A6262400517C30 /* MongooseDaemon-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AC74843A16A6262400517C30 /* MongooseDaemon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AC74844916A6262400517C30 /* Build configuration list for PBXNativeTarget "MongooseDaemon" */;
+			buildPhases = (
+				AC74843716A6262400517C30 /* Sources */,
+				AC74843816A6262400517C30 /* Frameworks */,
+				AC74843916A6262400517C30 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MongooseDaemon;
+			productName = MongooseDaemon;
+			productReference = AC74843B16A6262400517C30 /* libMongooseDaemon.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AC74843216A6262400517C30 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "<add your own>";
+			};
+			buildConfigurationList = AC74843516A6262400517C30 /* Build configuration list for PBXProject "MongooseDaemon" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = AC74843016A6262400517C30;
+			productRefGroup = AC74843C16A6262400517C30 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AC74843A16A6262400517C30 /* MongooseDaemon */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AC74843716A6262400517C30 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AC74845216A626A500517C30 /* mongoose.c in Sources */,
+				AC74845316A626A500517C30 /* MongooseDaemon.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AC74844716A6262400517C30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		AC74844816A6262400517C30 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AC74844A16A6262400517C30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/MongooseDaemon.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		AC74844B16A6262400517C30 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/MongooseDaemon.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AC74843516A6262400517C30 /* Build configuration list for PBXProject "MongooseDaemon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC74844716A6262400517C30 /* Debug */,
+				AC74844816A6262400517C30 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AC74844916A6262400517C30 /* Build configuration list for PBXNativeTarget "MongooseDaemon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC74844A16A6262400517C30 /* Debug */,
+				AC74844B16A6262400517C30 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AC74843216A6262400517C30 /* Project object */;
+}
