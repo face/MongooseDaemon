@@ -21,6 +21,10 @@ directly from mongoose-2.6 and are unmodified.
 They are simply forked in this package for
 convenience and stability.
 
+NOTE:  the project is set up to build a simple .a file that can be linked to your code.
+The ideal is to support cocoapods (http://cocoapods.org/).
+
+
 Usage
 =======
 
