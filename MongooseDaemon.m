@@ -69,7 +69,7 @@
 	}
     else {
         struct in_addr **list = (struct in_addr **)host->h_addr_list;
-		return [NSString stringWithCString:inet_ntoa(*list[0])];
+		return [NSString stringWithCString:inet_ntoa(*list[0]) encoding:NSUTF8StringEncoding];
     }
 	
 	return NULL;
