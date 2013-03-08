@@ -46,14 +46,100 @@
 //#define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 #define DOCUMENTS_FOLDER NSHomeDirectory()
 
-@implementation MongooseDaemon
 
-@synthesize ctx;
+@interface MongooseDaemon ()
 
+@end
+
+@implementation MongooseDaemon {
+  dispatch_queue_t _queue;
+  struct mg_context *_ctx;
+  NSString *_root;
+  NSInteger _port;
+}
+
+@synthesize root = _root;
+@synthesize port = _port;
+
+- (id)init {
+  self = [super init];
+  if (self) {
+    // create a serial queue
+    static NSInteger queueCount = 0;
+    NSString *queueLabel = [NSString stringWithFormat:@"%@.Mongoose.%d", [[NSBundle mainBundle] bundleIdentifier], queueCount];
+    _queue = dispatch_queue_create([queueLabel UTF8String], NULL);
+    queueCount++;
+    
+    // set port and root defaults
+    _port = 80;
+    _root = DOCUMENTS_FOLDER;
+  }
+  return self;
+}
+
+- (void)dealloc {
+  [self stop];
+  self.root = nil;
+}
+
+
+#pragma mark - start/stop
+
+- (void)start {
+  dispatch_sync(_queue, ^{
+    if (_ctx == NULL) {
+      _ctx = mg_start();     // Start Mongoose serving thread
+      mg_set_option(_ctx, "root", [_root UTF8String]);  // Set document root
+      mg_set_option(_ctx, "ports", [[@(_port) stringValue] UTF8String]);    // Listen on port XXXX
+      //mg_bind_to_uri(ctx, "/foo", &bar, NULL); // Setup URI handler
+    }
+  });
+  // Now Mongoose is up, running and configured.
+  // Serve until somebody terminates us
+  NSLog(@"Mongoose Server is running on http://%@:%d", [self localIPAddress], self.port);
+}
+
+- (void)stop {
+  dispatch_sync(_queue, ^{
+    if (_ctx != NULL) {
+      mg_stop(_ctx);
+      _ctx = NULL;
+    }
+  });
+}
+
+
+#pragma mark - Public Properties
+
+- (BOOL)isRunning {
+  __block BOOL running;
+  dispatch_sync(_queue, ^{
+    running = (_ctx != NULL);
+  });
+  return running;
+}
+
+- (void)setPort:(NSInteger)port {
+  dispatch_sync(_queue, ^{
+    if (_ctx == NULL) {
+      _port = port;
+    }
+  });
+}
+
+- (void)setRoot:(NSString *)root {
+  dispatch_sync(_queue, ^{
+    if (_ctx == NULL) {
+      _root = root;
+    }
+  });
+}
+
+
+#pragma mark - Private Methods?
 
 // Return the localized IP address - From Erica Sadun's cookbook
-- (NSString *) localIPAddress
-{
+- (NSString *) localIPAddress {
 	char baseHostName[255];
 	gethostname(baseHostName, 255);
 	
@@ -62,39 +148,19 @@
 	sprintf(hn, "%s.local", baseHostName);
 	
 	struct hostent *host = gethostbyname(hn);
-    if (host == NULL)
+  if (host == NULL)
 	{
-        herror("resolv");
+    herror("resolv");
 		return NULL;
 	}
-    else {
-        struct in_addr **list = (struct in_addr **)host->h_addr_list;
+  else {
+    struct in_addr **list = (struct in_addr **)host->h_addr_list;
 		return [NSString stringWithCString:inet_ntoa(*list[0]) encoding:NSUTF8StringEncoding];
-    }
+  }
 	
 	return NULL;
 }
 
-- (void)startHTTP:(NSString *)ports
-{
-  self.ctx = mg_start();     // Start Mongoose serving thread
-  mg_set_option(ctx, "root", [DOCUMENTS_FOLDER UTF8String]);  // Set document root
-  mg_set_option(ctx, "ports", [ports UTF8String]);    // Listen on port XXXX
-  //mg_bind_to_uri(ctx, "/foo", &bar, NULL); // Setup URI handler
 
-  // Now Mongoose is up, running and configured.
-  // Serve until somebody terminates us
-  NSLog(@"Mongoose Server is running on http://%@:8080", [self localIPAddress]);
-}
-
-- (void)startMongooseDaemon:(NSString *)ports;
-{
-  [self startHTTP:ports];
-}
-
-- (void)stopMongooseDaemon
-{
-  mg_stop(ctx);
-}
 
 @end

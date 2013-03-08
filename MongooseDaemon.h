@@ -39,13 +39,36 @@
 
 #import "mongoose.h"
 
-@interface MongooseDaemon : NSObject {
-  struct mg_context *ctx;
-}
+@interface MongooseDaemon : NSObject
 
-@property (readwrite)          struct mg_context *ctx;
+/*
+ The root directory of the local file system from which Mongoose will serve
+ files. Defaults to the documents directory. If the HTTP server is already 
+ running, this property will return without changing the value of the property.
+ */
+@property (nonatomic, strong) NSString *root;
 
-- (void)startMongooseDaemon:(NSString *)ports;
-- (void)stopMongooseDaemon;
+/*
+ The port Mongoose will listen for connections on. Defaults to 80. If the HTTP 
+ server is already running, this property will return without changing the value
+ of the property.
+ */
+@property (nonatomic, assign) NSInteger port;
+
+/*
+ A boolean that indicates if Mongoose is currently running.
+ */
+@property (nonatomic, readonly, assign, getter = isRunning) BOOL running;
+
+
+/*
+ Blocks until the HTTP server is started. Does nothing if the server is running.
+ */
+- (void)start;
+
+/*
+ Blocks until the HTTP server is stopped. Does nothing if the server is stopped.
+ */
+- (void)stop;
 
 @end
