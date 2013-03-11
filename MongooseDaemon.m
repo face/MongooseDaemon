@@ -39,12 +39,17 @@
 // with iPhone apps super easy
 
 #import "MongooseDaemon.h"
+#import "mongoose.h"
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 
 //#define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 #define DOCUMENTS_FOLDER NSHomeDirectory()
+
+
+#define MONGOOSE_OPTION_DOCUMENT_ROOT "document_root"
+#define MONGOOSE_OPTION_LISTENING_PORTS "listening_ports"
 
 
 @interface MongooseDaemon ()
@@ -54,12 +59,9 @@
 @implementation MongooseDaemon {
   dispatch_queue_t _queue;
   struct mg_context *_ctx;
-  NSString *_root;
-  NSInteger _port;
+  NSString *_documentRoot;
+  NSArray *_listeningPorts;
 }
-
-@synthesize root = _root;
-@synthesize port = _port;
 
 - (id)init {
   self = [super init];
@@ -71,15 +73,28 @@
     queueCount++;
     
     // set port and root defaults
-    _port = 80;
-    _root = DOCUMENTS_FOLDER;
+    _listeningPorts = @[@8080];
+    _documentRoot = DOCUMENTS_FOLDER;
+    
+    const char **options = mg_get_valid_option_names();
+    NSMutableDictionary *validOptions = [NSMutableDictionary dictionary];
+    int i;
+    for (i = 0; options[i * 2] != NULL; i++) {
+      NSString *option = [NSString stringWithUTF8String:options[i * 2]];
+      if (options[i * 2 + 1] == NULL) {
+        validOptions[option] = [NSNull null];
+      } else {
+        validOptions[option] = [NSString stringWithUTF8String:options[i * 2 + 1]];
+      }
+    }
+    NSLog(@"Available Mongoose Options = %@", validOptions);
   }
   return self;
 }
 
 - (void)dealloc {
   [self stop];
-  self.root = nil;
+  self.documentRoot = nil;
 }
 
 
@@ -88,15 +103,24 @@
 - (void)start {
   dispatch_sync(_queue, ^{
     if (_ctx == NULL) {
-      _ctx = mg_start();     // Start Mongoose serving thread
-      mg_set_option(_ctx, "root", [_root UTF8String]);  // Set document root
-      mg_set_option(_ctx, "ports", [[@(_port) stringValue] UTF8String]);    // Listen on port XXXX
-      //mg_bind_to_uri(ctx, "/foo", &bar, NULL); // Setup URI handler
+      
+      // Prepare callbacks structure. We have no callbacks, all are NULL.
+      // TODO: add callbacks, fire delegate methods
+      struct mg_callbacks callbacks;
+      memset(&callbacks, 0, sizeof(callbacks));
+      
+      // List of options. Last element must be NULL.
+      // TODO: 
+      const char *options[] = {
+        MONGOOSE_OPTION_DOCUMENT_ROOT, [_documentRoot UTF8String],
+        MONGOOSE_OPTION_LISTENING_PORTS, [[_listeningPorts componentsJoinedByString:@","] UTF8String],
+        NULL
+      };
+      
+      // start the web server
+      _ctx = mg_start(&callbacks, NULL, options);     // Start Mongoose serving thread
     }
   });
-  // Now Mongoose is up, running and configured.
-  // Serve until somebody terminates us
-  NSLog(@"Mongoose Server is running on http://%@:%d", [self localIPAddress], self.port);
 }
 
 - (void)stop {
@@ -119,48 +143,45 @@
   return running;
 }
 
-- (void)setPort:(NSInteger)port {
+- (void)setListeningPorts:(NSArray *)listeningPorts {
   dispatch_sync(_queue, ^{
     if (_ctx == NULL) {
-      _port = port;
+      _listeningPorts = [listeningPorts copy];
     }
   });
 }
 
-- (void)setRoot:(NSString *)root {
+- (NSArray *)listeningPorts {
+  __block NSArray *listeningPorts;
+  dispatch_sync(_queue, ^{
+    listeningPorts = [_listeningPorts copy];
+  });
+  return listeningPorts;
+}
+
+- (void)setListeningPort:(NSInteger)port {
+  [self setListeningPorts:@[@(port)]];
+}
+
+- (NSInteger)listeningPort {
+  return [(NSNumber *)self.listeningPorts[0] integerValue];
+}
+
+- (void)setDocumentRoot:(NSString *)documentRoot {
   dispatch_sync(_queue, ^{
     if (_ctx == NULL) {
-      _root = root;
+      _documentRoot = [documentRoot copy];
     }
   });
 }
 
-
-#pragma mark - Private Methods?
-
-// Return the localized IP address - From Erica Sadun's cookbook
-- (NSString *) localIPAddress {
-	char baseHostName[255];
-	gethostname(baseHostName, 255);
-	
-	// Adjust for iPhone -- add .local to the host name
-	char hn[255];
-	sprintf(hn, "%s.local", baseHostName);
-	
-	struct hostent *host = gethostbyname(hn);
-  if (host == NULL)
-	{
-    herror("resolv");
-		return NULL;
-	}
-  else {
-    struct in_addr **list = (struct in_addr **)host->h_addr_list;
-		return [NSString stringWithCString:inet_ntoa(*list[0]) encoding:NSUTF8StringEncoding];
-  }
-	
-	return NULL;
+- (NSString *)documentRoot {
+  __block NSString *documentRoot;
+  dispatch_sync(_queue, ^{
+    documentRoot = [_documentRoot copy];
+  });
+  return documentRoot;
 }
-
 
 
 @end

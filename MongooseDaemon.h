@@ -37,23 +37,29 @@
 //
 //
 
-#import "mongoose.h"
-
 @interface MongooseDaemon : NSObject
 
 /*
+ Must be a valid path.
  The root directory of the local file system from which Mongoose will serve
- files. Defaults to the documents directory. If the HTTP server is already 
+ files. Defaults to the documents directory. If the HTTP server is already
  running, this property will return without changing the value of the property.
  */
-@property (nonatomic, strong) NSString *root;
+@property (nonatomic, strong) NSString *documentRoot;
 
 /*
- The port Mongoose will listen for connections on. Defaults to 80. If the HTTP 
+ An array of NSNumber objects. Cannot be empty, can only contain valid port numbers.
+ The ports Mongoose will listen for connections on. Defaults to 8080. If the HTTP
  server is already running, this property will return without changing the value
  of the property.
  */
-@property (nonatomic, assign) NSInteger port;
+@property (nonatomic, strong) NSArray *listeningPorts;
+
+/*
+ This is a convenience method for getting/setting a single port. It uses 
+ listeningPorts underneath.  Must be a valid port number.
+ */
+@property (nonatomic, assign) NSInteger listeningPort;
 
 /*
  A boolean that indicates if Mongoose is currently running.
