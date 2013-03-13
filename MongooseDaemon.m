@@ -87,7 +87,7 @@
         validOptions[option] = [NSString stringWithUTF8String:options[i * 2 + 1]];
       }
     }
-    NSLog(@"Available Mongoose Options = %@", validOptions);
+//    NSLog(@"Available Mongoose Options = %@", validOptions);
   }
   return self;
 }
