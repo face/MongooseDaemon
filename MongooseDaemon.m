@@ -35,16 +35,13 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-// MongooseDaemon is a small wrapper to make ingetrating mongoose
-// with iPhone apps super easy
-
 #import "MongooseDaemon.h"
 #import "mongoose.h"
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 
-//#define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
+
 #define DOCUMENTS_FOLDER NSHomeDirectory()
 
 
