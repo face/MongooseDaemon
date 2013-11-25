@@ -83,6 +83,17 @@
 @interface MongooseDaemon : NSObject
 
 /**
+ The version of MongooseDaemon
+ */
++ (NSString *)versionString;
+
+
+/**
+ The version of the included mongoose library
+ */
++ (NSString *)mongooseVersionString;
+
+/**
  The root directory of the local file system from which Mongoose will serve files. Defaults to the documents directory.
  
  @warning Must be a valid path.

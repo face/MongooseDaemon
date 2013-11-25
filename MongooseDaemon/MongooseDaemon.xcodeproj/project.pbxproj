@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		190D72B51843CD7600D0A555 /* MongooseDaemon_MongooseCallbacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 190D72B41843CD5400D0A555 /* MongooseDaemon_MongooseCallbacks.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		190D72B61843CD7800D0A555 /* MongooseDaemon_MongooseCallbacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 190D72B41843CD5400D0A555 /* MongooseDaemon_MongooseCallbacks.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		19FB6B201842832800C71880 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19FB6B1F1842832800C71880 /* XCTest.framework */; };
 		19FB6B241842832800C71880 /* libMongooseDaemon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19FB6B0B1842832800C71880 /* libMongooseDaemon.a */; };
 		19FB6B2A1842832800C71880 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 19FB6B281842832800C71880 /* InfoPlist.strings */; };
@@ -58,6 +60,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		190D72B41843CD5400D0A555 /* MongooseDaemon_MongooseCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MongooseDaemon_MongooseCallbacks.h; sourceTree = "<group>"; };
 		19FB6B0B1842832800C71880 /* libMongooseDaemon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMongooseDaemon.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		19FB6B111842832800C71880 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		19FB6B161842832800C71880 /* MongooseDaemon-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MongooseDaemon-Prefix.pch"; sourceTree = "<group>"; };
@@ -154,7 +157,9 @@
 				19FB6B0D1842832800C71880 /* Frameworks */,
 				19FB6B0C1842832800C71880 /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		19FB6B0C1842832800C71880 /* Products */ = {
 			isa = PBXGroup;
@@ -184,6 +189,7 @@
 			children = (
 				19FB6B6C1842846100C71880 /* mongoose */,
 				19FB6B681842843900C71880 /* MongooseDaemon.h */,
+				190D72B41843CD5400D0A555 /* MongooseDaemon_MongooseCallbacks.h */,
 				19FB6B691842843900C71880 /* MongooseDaemon.m */,
 				19FB6B151842832800C71880 /* Supporting Files */,
 			);
@@ -300,6 +306,7 @@
 			files = (
 				19FB6B6A1842843900C71880 /* MongooseDaemon.h in Headers */,
 				19FB6B70184286C600C71880 /* mongoose.h in Headers */,
+				190D72B51843CD7600D0A555 /* MongooseDaemon_MongooseCallbacks.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,6 +316,7 @@
 			files = (
 				19FB6B9B18428AD200C71880 /* mongoose.h in Headers */,
 				19FB6B9D18428ADF00C71880 /* MongooseDaemon.h in Headers */,
+				190D72B61843CD7800D0A555 /* MongooseDaemon_MongooseCallbacks.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -585,6 +593,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 2;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -601,7 +610,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "";
 				SDKROOT = macosx;
 			};
@@ -623,6 +631,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -642,6 +651,7 @@
 		19FB6B301842832800C71880 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
 				PRODUCT_NAME = MongooseDaemon;
@@ -652,6 +662,7 @@
 		19FB6B311842832800C71880 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
 				PRODUCT_NAME = MongooseDaemon;
@@ -705,7 +716,7 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
@@ -714,7 +725,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "MongooseDaemon/MongooseDaemon-Info.plist";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = MongooseDaemon;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -726,12 +737,11 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 2;
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
 				INFOPLIST_FILE = "MongooseDaemon/MongooseDaemon-Info.plist";
-				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = MongooseDaemon;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -874,6 +884,7 @@
 				19FB6B9618428A7200C71880 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		19FB6BC818428FA600C71880 /* Build configuration list for PBXNativeTarget "iOSMongooseExample" */ = {
 			isa = XCConfigurationList;
@@ -882,6 +893,7 @@
 				19FB6BCA18428FA600C71880 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		19FB6BCB18428FA600C71880 /* Build configuration list for PBXNativeTarget "iOSMongooseExampleTests" */ = {
 			isa = XCConfigurationList;
@@ -890,6 +902,7 @@
 				19FB6BCD18428FA600C71880 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
