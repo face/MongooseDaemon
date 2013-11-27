@@ -79,13 +79,6 @@
       callbacks.begin_request = &begin_request;
       callbacks.end_request = &end_request;
       callbacks.log_message = &log_message;
-//      callbacks.init_ssl = &init_ssl; // SSL requires libssl.dylib
-      callbacks.websocket_connect = &websocket_connect;
-      callbacks.websocket_ready = &websocket_ready;
-      callbacks.websocket_data = &websocket_data;
-      callbacks.open_file = &open_file;
-      callbacks.init_lua = &init_lua;
-      callbacks.upload = &upload;
       callbacks.thread_start = &thread_start;
       callbacks.thread_stop = &thread_stop;
       
@@ -134,7 +127,7 @@
       };
       
       // start the web server
-      _ctx = mg_start(&callbacks, NULL, options);     // Start Mongoose serving thread
+      _ctx = mg_start(&callbacks, (__bridge void *)(self), options);     // Start Mongoose serving thread
     }
   });
 }
@@ -213,87 +206,234 @@
 
 
 @implementation MongooseDaemon (MongooseCallbacks)
-// TODO: fire delegate methods
 
 // Called when mongoose has received new HTTP request.
 int begin_request(struct mg_connection *connection)
 {
-  NSLog(@"begin_request");
-  return 0;
+  if (connection == NULL) {
+    return 0;
+  }
+  struct mg_request_info *requestInfo = mg_get_request_info(connection);
+  
+  MongooseDaemon *daemon = (__bridge MongooseDaemon *)requestInfo->user_data;
+  NSHTTPURLResponse *response = nil;
+  NSData *responseData = nil;
+  if ([daemon.delegate respondsToSelector:@selector(mongooseDaemon:customResponseForRequest:withResponseData:)]) {
+    NSURLRequest *request = [MongooseDaemon requestFromMgRequestInfo:requestInfo];
+    response = [daemon.delegate mongooseDaemon:daemon customResponseForRequest:request withResponseData:&responseData];
+    if (response) {
+      NSMutableString *rawHTTPMessage = [[NSMutableString alloc] init];
+      
+      // STATUS LINE
+      // TODO: extract http version string from response
+      NSString *status = [NSString stringWithFormat:@"HTTP/1.1 %ld %@\r\n", (long)response.statusCode, [MongooseDaemon responseReasonPhraseForStatusCode:response.statusCode]];
+      [rawHTTPMessage appendString:status];
+      
+      // HEADERS
+      NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:[response allHeaderFields]];
+      // always set content-length
+      headers[@"Content-Length"] = @(responseData.length);
+      for (NSString *name in headers) {
+        NSString *headerString = [NSString stringWithFormat:@"%@: %@\r\n", name, headers[name]];
+        [rawHTTPMessage appendString:headerString];
+      }
+      
+      // DATA
+      if (responseData.length) {
+        // insert blank line before data
+        [rawHTTPMessage appendString:@"\r\n"];
+        [rawHTTPMessage appendFormat:@"%s", responseData.bytes];
+      }
+      
+      NSLog(@"rawHTTPMessage:\n%@", rawHTTPMessage);
+      mg_printf(connection, "%s", [rawHTTPMessage UTF8String]);
+      
+      return 1;
+      
+    } else {
+      return 0;
+    }
+  }
+  
+  return (response != nil);
 }
 
 // Called when mongoose has finished processing request.
 void end_request(const struct mg_connection *connection, int reply_status_code)
 {
-  NSLog(@"end_request: reply_status_code[%d]", reply_status_code);
+  if (connection == NULL) {
+    return;
+  }
+  struct mg_request_info *requestInfo = mg_get_request_info(connection);
+  MongooseDaemon *daemon = (__bridge MongooseDaemon *)requestInfo->user_data;
+  if ([daemon.delegate respondsToSelector:@selector(mongooseDaemon:didCompleteRequest:withStatusCode:)]) {
+    NSURLRequest *request = [MongooseDaemon requestFromMgRequestInfo:requestInfo];
+    [daemon.delegate mongooseDaemon:daemon didCompleteRequest:request withStatusCode:(NSInteger)reply_status_code];
+  }
 }
 
 // Called when mongoose is about to log a message.
 int log_message(const struct mg_connection *connection, const char *message)
 {
-  NSLog(@"log_message: message[%s]", message);
-  return 0;
-}
-
-// Called when mongoose initializes SSL library.
-int init_ssl(void *ssl_context, void *user_data)
-{
-  NSLog(@"init_ssl");
-  return 0;
-}
-
-// Called when websocket request is received, before websocket handshake.
-int websocket_connect(const struct mg_connection *connection)
-{
-  NSLog(@"websocket_connect");
-  return 0;
-}
-
-// Called when websocket handshake is successfully completed, and
-// connection is ready for data exchange.
-void websocket_ready(struct mg_connection *connection)
-{
-  NSLog(@"websocket_ready");
-}
-
-// Called when data frame has been received from the client.
-int websocket_data(struct mg_connection *connection, int bits, char *data, size_t data_len)
-{
-  NSLog(@"websocket_data: data[%s] data_len[%ld]", data, data_len);
-  return 0;
-}
-
-// Called when mongoose tries to open a file.
-const char *open_file(const struct mg_connection *connection, const char *path, size_t *data_len)
-{
-  NSLog(@"open_file: path[%s] data_len[%ld]", path, *data_len);
-  // NULL means serve from file
-  return NULL;
-}
-
-// Called when mongoose is about to serve Lua server page
-void init_lua(struct mg_connection *connection, void *lua_context)
-{
-  NSLog(@"init_lua");
-}
-
-// Called when mongoose has uploaded a file to a temporary directory
-void upload(struct mg_connection *connection, const char *file_name)
-{
-  NSLog(@"upload: file_name[%s]", file_name);
+  if (connection == NULL) {
+    return 0;
+  }
+  BOOL log = YES;
+  struct mg_request_info *requestInfo = mg_get_request_info(connection);
+  MongooseDaemon *daemon = (__bridge MongooseDaemon *)requestInfo->user_data;
+  if ([daemon.delegate respondsToSelector:@selector(mongooseDaemon:shouldLogMessage:)]) {
+    log = [daemon.delegate mongooseDaemon:daemon shouldLogMessage:[NSString stringWithUTF8String:message]];
+  }
+  return !log;
 }
 
 // Called at the beginning of mongoose's thread execution in the context of
 // that thread.
 void thread_start(void *user_data, void **conn_data)
 {
-  NSLog(@"thread_start");
 }
 
 // Called when mongoose's thread is about to terminate.
 void thread_stop(void *user_data, void **conn_data)
 {
-  NSLog(@"thread_stop");
+}
+
+
+#pragma mark - Private helper methods
+
+// extract an NSURLRequest from the mg_request_info object
++ (NSURLRequest *)requestFromMgRequestInfo:(const struct mg_request_info *)requestInfo {
+  if (requestInfo == NULL) {
+    return nil;
+  }
+  
+  NSString *uri = [NSString stringWithUTF8String:requestInfo->uri];
+  if (requestInfo->query_string != NULL) {
+    uri = [uri stringByAppendingFormat:@"?%s", requestInfo->query_string];
+  }
+  NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:uri]];
+  mutableRequest.HTTPMethod = [NSString stringWithUTF8String:requestInfo->request_method];
+  
+  for (int i = 0; i < requestInfo->num_headers; i++) {
+    struct mg_header header = requestInfo->http_headers[i];
+    [mutableRequest setValue:[NSString stringWithUTF8String:header.value] forHTTPHeaderField:[NSString stringWithUTF8String:header.name]];
+  }
+  
+  return [mutableRequest copy];
+}
+
++ (NSString *)responseReasonPhraseForStatusCode:(NSInteger)statusCode {
+  NSInteger responseCategory = statusCode / 100;
+  
+  switch (responseCategory) {
+    case 1:
+      switch (statusCode) {
+        case 100:
+          return @"Switching Protocols";
+        case 101:
+          return @"Continue";
+        default:
+          return @"Informational";
+      }
+    case 2:
+      switch (statusCode) {
+        case 200:
+          return @"OK";
+        case 201:
+          return @"Created";
+        case 202:
+          return @"Accepted";
+        case 203:
+          return @"Non-Authoritative Information";
+        case 204:
+          return @"No Content";
+        case 205:
+          return @"Reset Content";
+        case 206:
+          return @"Partial Content";
+        default:
+          return @"Success";
+      }
+    case 3:
+      switch (statusCode) {
+        case 300:
+          return @"Multiple Choices";
+        case 301:
+          return @"Moved Permanently";
+        case 302:
+          return @"Found";
+        case 303:
+          return @"See Other";
+        case 304:
+          return @"Not Modified";
+        case 305:
+          return @"Use Proxy";
+        case 307:
+          return @"Temporary Redirect";
+        default:
+          return @"Redirection";
+      }
+    case 4:
+      switch (statusCode) {
+        case 400:
+          return @"Bad Request";
+        case 401:
+          return @"Unauthorized";
+        case 402:
+          return @"Payment Required";
+        case 403:
+          return @"Forbidden";
+        case 404:
+          return @"Not Found";
+        case 405:
+          return @"Method Not Allowed";
+        case 406:
+          return @"Not Acceptable";
+        case 407:
+          return @"Proxy Authentication Required";
+        case 408:
+          return @"Request Time-out";
+        case 409:
+          return @"Conflict";
+        case 410:
+          return @"Gone";
+        case 411:
+          return @"Length Required";
+        case 412:
+          return @"Precondition Failed";
+        case 413:
+          return @"Request Entity Too Large";
+        case 414:
+          return @"Request-URI Too Large";
+        case 415:
+          return @"Unsupported Media Type";
+        case 416:
+          return @"Requested range not satisfiable";
+        case 417:
+          return @"Expectation Failed";
+        default:
+          return @"Client Error";
+      }
+    case 5:
+      switch (statusCode) {
+        case 500:
+          return @"Internal Server Error";
+        case 501:
+          return @"Not Implemented";
+        case 502:
+          return @"Bad Gateway";
+        case 503:
+          return @"Service Unavailable";
+        case 504:
+          return @"Gateway Time-out";
+        case 505:
+          return @"HTTP Version not supported";
+        default:
+          return @"Server Error";
+      }
+    default:
+      return @"Unknown Response";
+  }
 }
 
 

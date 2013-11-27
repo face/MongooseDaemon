@@ -38,48 +38,14 @@
 //
 
 
+@protocol MongooseDaemonDelegate;
+
+
 /**
  `MongooseDaemon` is an objective C wrapper around the embedable `mongoose` http server for iOS or Mac development. It is ideal for both embedded http services as well as simply debugging your iOS or Mac applications file structure. `MongooseDaemon` is offered under a BSD style license.
  
  `Mongoose` is a lightweight embedable http server written by Sergey Lyubka and offered under a BSD style license. More information on mongoose can be found at the [project's github](https://github.com/valenok/mongoose).
- 
- ##Usage
- 
- Clone the project directory and add submodules. Add the following files to your Xcode project:
- 
- - `MongooseDaemon.h|.m`
- - `mongoose/mongoose.h|.c`
- 
- Then you can start it within one of your classes to provide http access to your iOS or Mac application.
- 
- For example, to start `MongooseDaemon` when your application starts on port 8888:
- 
- Add the following to `MyAppDelegate.m`:
- 
-     #import "MongooseDaemon.h"
- 
-     @implementation MyAppDelegate {
-         MongooseDaemon    *mongooseDaemon;
-     }
- 
-     - (void)applicationDidFinishLaunching:(UIApplication *)application {
-         mongooseDaemon = [[MongooseDaemon alloc] init];
-         mongooseDaemon.listeningPort = 8888;
-         [mongooseDaemon start];
-     }
-     - (void)dealloc {
-         [mongooseDaemon stop];
-     }
- 
- And that's it!
- 
- ##TODO
- 
- - Add support for more of mongoose's options.
- - Implement mongoose callbacks and fire delegate/notifications.
- 
  */
-
 @interface MongooseDaemon : NSObject
 
 /**
@@ -92,6 +58,13 @@
  The version of the included mongoose library
  */
 + (NSString *)mongooseVersionString;
+
+/**
+ Optional delegate to allow for custom responses to be served from memory rather than the file system.
+ 
+ @see MongooseDaemonDelegate
+ */
+@property (weak) id<MongooseDaemonDelegate> delegate;
 
 /**
  The root directory of the local file system from which Mongoose will serve files. Defaults to the documents directory.
@@ -136,3 +109,43 @@
 - (void)stop;
 
 @end
+
+
+/**
+ MongooseDaemonDelegate allows Clients to provide custom responses to incoming requests and more visibility into Mongoose as it is running.
+ */
+@protocol MongooseDaemonDelegate <NSObject>
+
+/**
+ Allows the delegate to provide the response to the incoming request instead of allowing Mongoose to serve from the file system.
+ 
+ Returning nil will allow Mongoose to serve the request from the documents folder normally.
+ 
+ @return A valid NSHTTPURLResponse object or nil
+ @param daemon A pointer to the MongooseDaemon instance calling the delegate
+ @param request The NSURLRequest being handled by MongooseDaemon
+ @param responseData OUT A pointer to the response data
+ */
+- (NSHTTPURLResponse *)mongooseDaemon:(MongooseDaemon *)daemon customResponseForRequest:(NSURLRequest *)request withResponseData:(NSData *__autoreleasing *)responseData;
+
+/**
+ This delegate method is called when Mongoose completes a request and provides the status code. It is for informational purposes only.
+ 
+ @param daemon A pointer to the MongooseDaemon instance calling the delegate
+ @param request The NSURLRequest completed
+ @param statusCode The statusCode for the completed request
+ */
+- (void)mongooseDaemon:(MongooseDaemon *)daemon didCompleteRequest:(NSURLRequest *)request withStatusCode:(NSInteger)statusCode;
+
+/**
+ This delegate method is called before Mongoose logs a message to the error log.
+ 
+ @return A BOOL indicating if Mongoose should log the message in its own error log
+ @param daemon A pointer to the MongooseDaemon instance calling the delegate
+ @param message The error message to be logged
+ */
+- (BOOL)mongooseDaemon:(MongooseDaemon *)daemon shouldLogMessage:(NSString *)message;
+
+
+@end
+
