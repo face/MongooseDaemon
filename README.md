@@ -15,40 +15,22 @@ github](https://github.com/valenok/mongoose).
 
 ##Usage
 
-Clone the project directory and add submodules. Add the following files to your Xcode project:
+As of version 1.1, MongooseDaemon is now compiled into a static library for iOS projects and into a framework for Mac OS projects and is meant to be included as a subproject in your workspace.
 
-- `MongooseDaemon.h|.m`
-- `mongoose/mongoose.h|.c`
+1. Add MongooseDaemon as a submodule to your project using `git submodule add git@github.com:CIM/MongooseDaemon.git`.
+2. Add MongooseDaemon's dependencies using `git submodule update --recursive --init`
+3. Add `MongooseDaemon.xcodeproj` to your workspace.
+4. Import MongooseDaemon using `#import <MongooseDaemon/MongooseDaemon.h>`
 
-Then you can start it within one of your classes to
-provide http access to your iOS or Mac application.
-
-For example, to start `MongooseDaemon` when your application
-starts on port 8888:
-
-Add the following to `MyAppDelegate.m`:
-
-    #import "MongooseDaemon.h"
-    
-    @implementation MyAppDelegate {
-        MongooseDaemon    *mongooseDaemon;
-    }
-    
-    - (void)applicationDidFinishLaunching:(UIApplication *)application {
-        mongooseDaemon = [[MongooseDaemon alloc] init];
-        mongooseDaemon.listeningPort = 8888;
-        [mongooseDaemon start];
-    }
-    - (void)dealloc {
-        [mongooseDaemon stop];
-    }
-
-And that's it!
+An example iOS app is included with the project that demonstrates how to use MongoseDaemon.
 
 ##TODO
 
+- Add support for SSL (!)
 - Add support for more of mongoose's options.
-- Implement mongoose callbacks and fire delegate/notifications.
+- Mac OS example project.
+- Make a CocoaPod because everything uses CocoaPods now.
+- Add some tests or else no one will take this serioiusly.
 
 ---
 
