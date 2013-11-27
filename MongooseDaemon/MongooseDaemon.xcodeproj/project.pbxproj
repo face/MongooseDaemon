@@ -654,6 +654,11 @@
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
+				OTHER_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 				PRODUCT_NAME = MongooseDaemon;
 				SDKROOT = iphoneos;
 			};
@@ -665,6 +670,11 @@
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
+				OTHER_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 				PRODUCT_NAME = MongooseDaemon;
 				SDKROOT = iphoneos;
 			};
@@ -726,6 +736,11 @@
 				);
 				INFOPLIST_FILE = "MongooseDaemon/MongooseDaemon-Info.plist";
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 				PRODUCT_NAME = MongooseDaemon;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -742,6 +757,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
 				INFOPLIST_FILE = "MongooseDaemon/MongooseDaemon-Info.plist";
+				OTHER_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 				PRODUCT_NAME = MongooseDaemon;
 				WRAPPER_EXTENSION = framework;
 			};
