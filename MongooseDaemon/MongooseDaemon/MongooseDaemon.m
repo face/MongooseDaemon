@@ -72,7 +72,7 @@
     NSString *queueLabel = [NSString stringWithFormat:@"%@.MongoseQueue.%d", [[NSBundle mainBundle] bundleIdentifier], queueCount++];
     self.queue = dispatch_queue_create([queueLabel UTF8String], NULL);
     dispatch_sync(self.queue, ^{
-      NSLog(@"[%@] created queue [%@]", self, self.queue);
+      CIMLog(logMongoose, @"[%@] created queue [%@]", self, self.queue);
       
       // Prepare callbacks structure.
       memset(&callbacks, 0, sizeof(callbacks));
@@ -94,7 +94,7 @@
           validOptions[option] = [NSString stringWithUTF8String:options[i * 2 + 1]];
         }
       }
-      NSLog(@"Available Mongoose Options = %@", validOptions);
+      CIMLog(logMongoose, @"Mongoose Options = %@", mongooseOptions);
       
       // set port and root defaults
       _listeningPorts = @[@8080];
@@ -210,6 +210,7 @@
 // Called when mongoose has received new HTTP request.
 int begin_request(struct mg_connection *connection)
 {
+  CIMLog(logMongoose, @"begin_request");
   if (connection == NULL) {
     return 0;
   }
@@ -245,7 +246,7 @@ int begin_request(struct mg_connection *connection)
         [rawHTTPMessage appendFormat:@"%s", responseData.bytes];
       }
       
-      NSLog(@"rawHTTPMessage:\n%@", rawHTTPMessage);
+      CIMLog(logMongoose, @"rawHTTPMessage:\n%@", rawHTTPMessage);
       mg_printf(connection, "%s", [rawHTTPMessage UTF8String]);
       
       return 1;
@@ -261,6 +262,7 @@ int begin_request(struct mg_connection *connection)
 // Called when mongoose has finished processing request.
 void end_request(const struct mg_connection *connection, int reply_status_code)
 {
+  CIMLog(logMongoose, @"end_request reply_status_code [%d]", reply_status_code);
   if (connection == NULL) {
     return;
   }
@@ -275,6 +277,7 @@ void end_request(const struct mg_connection *connection, int reply_status_code)
 // Called when mongoose is about to log a message.
 int log_message(const struct mg_connection *connection, const char *message)
 {
+  CIMLog(logMongoose, @"log_message message [%s]", message);
   if (connection == NULL) {
     return 0;
   }

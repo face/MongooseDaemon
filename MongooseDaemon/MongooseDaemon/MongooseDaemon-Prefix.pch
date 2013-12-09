@@ -7,3 +7,22 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
 #endif
+
+#ifndef logMongoose
+#define logMongoose 0
+#endif
+
+
+#ifndef CIMLog
+#if logMongoose
+#import <pthread.h>
+#define CIMLog(c,s,...) do { \
+NSString *file = [[NSString stringWithUTF8String:__FILE__] lastPathComponent]; \
+NSString *threadName = [NSThread currentThread].name; \
+if (![threadName length]) threadName = [[NSThread currentThread] isMainThread] ? @"MAIN" : [NSString stringWithFormat:@"%i", pthread_mach_thread_np(pthread_self())]; \
+NSLog(@"%@:%d [%@] - %@", file, __LINE__, threadName, [NSString stringWithFormat:s, __VA_ARGS__]); \
+} while (0)
+#else
+#define CIMLog(c,s,...) do { } while (0)
+#endif
+#endif
