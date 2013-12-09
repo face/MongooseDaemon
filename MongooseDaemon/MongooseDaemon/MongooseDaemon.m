@@ -43,11 +43,16 @@
 #include <netdb.h>
 
 
-#define DOCUMENTS_FOLDER NSHomeDirectory()
+//
+// supported mongoose options
+typedef NS_ENUM(NSUInteger, mongooseOptionIndex) {
+  mongooseOptionIndexDocumentRoot = 0,
+  mongooseOptionIndexListeningPort
+};
+const NSUInteger kNumberOfSupportedOptions = 2;
 
-
-#define MONGOOSE_OPTION_DOCUMENT_ROOT "document_root"
-#define MONGOOSE_OPTION_LISTENING_PORTS "listening_ports"
+const char * kMongooseOptionDocumentRoot = "document_root";
+const char * kMongooseOptionListeningPorts = "listening_ports";
 
 
 @interface MongooseDaemon ()
@@ -58,7 +63,7 @@
 
 @implementation MongooseDaemon {
   struct mg_context *_ctx;
-  struct mg_callbacks callbacks;
+  struct mg_callbacks _callbacks;
 }
 
 @synthesize documentRoot = _documentRoot;
@@ -69,36 +74,36 @@
   if (self) {
     // create a serial queue
     static int queueCount = 0;
-    NSString *queueLabel = [NSString stringWithFormat:@"%@.MongoseQueue.%d", [[NSBundle mainBundle] bundleIdentifier], queueCount++];
+    NSString *queueLabel = [NSString stringWithFormat:@"%@.MongooseQueue.%d", [[NSBundle mainBundle] bundleIdentifier], queueCount++];
     self.queue = dispatch_queue_create([queueLabel UTF8String], NULL);
     dispatch_sync(self.queue, ^{
       CIMLog(logMongoose, @"[%@] created queue [%@]", self, self.queue);
       
       // Prepare callbacks structure.
-      memset(&callbacks, 0, sizeof(callbacks));
-      callbacks.begin_request = &begin_request;
-      callbacks.end_request = &end_request;
-      callbacks.log_message = &log_message;
-      callbacks.thread_start = &thread_start;
-      callbacks.thread_stop = &thread_stop;
+      memset(&_callbacks, 0, sizeof(_callbacks));
+      _callbacks.begin_request = &begin_request;
+      _callbacks.end_request = &end_request;
+      _callbacks.log_message = &log_message;
+      _callbacks.thread_start = &thread_start;
+      _callbacks.thread_stop = &thread_stop;
       
       // list available options and their defaults
       const char **options = mg_get_valid_option_names();
-      NSMutableDictionary *validOptions = [NSMutableDictionary dictionary];
+      NSMutableDictionary *mongooseOptions = [NSMutableDictionary dictionary];
       int i;
       for (i = 0; options[i * 2] != NULL; i++) {
         NSString *option = [NSString stringWithUTF8String:options[i * 2]];
         if (options[i * 2 + 1] == NULL) {
-          validOptions[option] = [NSNull null];
+          mongooseOptions[option] = [NSNull null];
         } else {
-          validOptions[option] = [NSString stringWithUTF8String:options[i * 2 + 1]];
+          mongooseOptions[option] = [NSString stringWithUTF8String:options[i * 2 + 1]];
         }
       }
       CIMLog(logMongoose, @"Mongoose Options = %@", mongooseOptions);
       
       // set port and root defaults
       _listeningPorts = @[@8080];
-      _documentRoot = DOCUMENTS_FOLDER;
+      _documentRoot = NSHomeDirectory();
       
     });
   }
@@ -120,14 +125,16 @@
       // List of options. Last element must be NULL.
       // TODO: dynamically generate this array based on set parameters
       //       ...or just set all options every time
-      const char *options[] = {
-        MONGOOSE_OPTION_DOCUMENT_ROOT, [_documentRoot UTF8String],
-        MONGOOSE_OPTION_LISTENING_PORTS, [[_listeningPorts componentsJoinedByString:@","] UTF8String],
-        NULL
-      };
+      const char *options[[self numberOfSupportedOptions] * 2 + 1];
+      NSUInteger i;
+      for (i = 0; i < [self numberOfSupportedOptions]; i++) {
+        options[i * 2] = [self nameOfOptionAtIndex:i];
+        options[i * 2 + 1] = [self valueOfOptionAtIndex:i];
+      }
+      options[i * 2] = NULL;
       
       // start the web server
-      _ctx = mg_start(&callbacks, (__bridge void *)(self), options);     // Start Mongoose serving thread
+      _ctx = mg_start(&_callbacks, (__bridge void *)(self), options);     // Start Mongoose serving thread
     }
   });
 }
@@ -161,6 +168,10 @@
 }
 
 - (void)setListeningPorts:(NSArray *)listeningPorts {
+  NSAssert(listeningPorts.count > 0, @"listeningPorts array cannot be empty!");
+  for (id object in listeningPorts) {
+    NSAssert([object isKindOfClass:[NSNumber class]], @"listeningPorts must be NSNumbers!");
+  }
   dispatch_sync(self.queue, ^{
     if (_ctx == NULL) {
       _listeningPorts = [listeningPorts copy];
@@ -198,6 +209,41 @@
     documentRoot = [_documentRoot copy];
   });
   return documentRoot;
+}
+
+
+#pragma mark - Mongoose Options
+
+- (NSUInteger)numberOfSupportedOptions {
+  return kNumberOfSupportedOptions;
+}
+
+- (const char *)nameOfOptionAtIndex:(mongooseOptionIndex)index {
+  switch (index) {
+    case mongooseOptionIndexDocumentRoot:
+      return kMongooseOptionDocumentRoot;
+      
+    case mongooseOptionIndexListeningPort:
+      return kMongooseOptionListeningPorts;
+      
+    default:
+      NSAssert1(false, @"Unexpected option index [%ld]", (long)index);
+      return NULL;
+  }
+}
+
+- (const char *)valueOfOptionAtIndex:(mongooseOptionIndex)index {
+  switch (index) {
+    case mongooseOptionIndexDocumentRoot:
+      return [_documentRoot UTF8String];
+      
+    case mongooseOptionIndexListeningPort:
+      return [[_listeningPorts componentsJoinedByString:@","] UTF8String];
+      
+    default:
+      NSAssert1(false, @"Unexpected option index [%ld]", (long)index);
+      return NULL;
+  }
 }
 
 
