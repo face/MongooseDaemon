@@ -80,6 +80,9 @@
 
 /* Begin PBXFileReference section */
 		190D72B41843CD5400D0A555 /* MongooseDaemon_MongooseCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MongooseDaemon_MongooseCallbacks.h; sourceTree = "<group>"; };
+		193861DC185698A200EFEDED /* MongooseDaemonVersion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MongooseDaemonVersion.h; path = MongooseDaemon/MongooseDaemonVersion.h; sourceTree = SOURCE_ROOT; };
+		193861DD18569E6C00EFEDED /* MongooseDaemon-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MongooseDaemon-Info.plist"; sourceTree = "<group>"; };
+		1947CAAE185759B000C7CDE3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		19FB6B0B1842832800C71880 /* libMongooseDaemon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMongooseDaemon.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		19FB6B111842832800C71880 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		19FB6B161842832800C71880 /* MongooseDaemon-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MongooseDaemon-Prefix.pch"; sourceTree = "<group>"; };
@@ -207,6 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				19FB6B6C1842846100C71880 /* mongoose */,
+				193861DC185698A200EFEDED /* MongooseDaemonVersion.h */,
 				19FB6B681842843900C71880 /* MongooseDaemon.h */,
 				190D72B41843CD5400D0A555 /* MongooseDaemon_MongooseCallbacks.h */,
 				19FB6B691842843900C71880 /* MongooseDaemon.m */,
@@ -218,6 +222,8 @@
 		19FB6B151842832800C71880 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				193861DD18569E6C00EFEDED /* MongooseDaemon-Info.plist */,
+				1947CAAD185759B000C7CDE3 /* InfoPlist.strings */,
 				19FB6B161842832800C71880 /* MongooseDaemon-Prefix.pch */,
 			);
 			name = "Supporting Files";
@@ -538,6 +544,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		1947CAAD185759B000C7CDE3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1947CAAE185759B000C7CDE3 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		19FB6B281842832800C71880 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -581,7 +595,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1.2;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -601,6 +615,7 @@
 				PRODUCT_NAME = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -620,7 +635,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1.2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -635,6 +650,7 @@
 				PRODUCT_NAME = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
@@ -716,7 +732,7 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 3;
+				DYLIB_CURRENT_VERSION = 1.2;
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
@@ -741,7 +757,7 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 3;
+				DYLIB_CURRENT_VERSION = 1.2;
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
@@ -872,7 +888,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1.2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -887,6 +903,7 @@
 				PRODUCT_NAME = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Distribution;
 		};
@@ -912,7 +929,7 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 2;
+				DYLIB_CURRENT_VERSION = 1.2;
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";

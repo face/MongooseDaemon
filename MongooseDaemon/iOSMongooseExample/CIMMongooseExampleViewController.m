@@ -197,7 +197,7 @@ NSString * const kMongooseExampleTableViewLabelCellIdentifier = @"kMongooseExamp
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
   switch (section) {
     case 0:
-      return NSLocalizedString(@"Mongoose Settings", nil);
+      return [NSString stringWithFormat:NSLocalizedString(@"Mongoose [%@] Settings", nil), [MongooseDaemon versionString]];
     case 1:
       return NSLocalizedString(@"Static File", nil);
     case 2:

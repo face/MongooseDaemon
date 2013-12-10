@@ -37,6 +37,7 @@
 
 #import "MongooseDaemon.h"
 #import "MongooseDaemon_MongooseCallbacks.h"
+#import "MongooseDaemonVersion.h"
 #import "mongoose.h"
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -152,7 +153,8 @@ const char * kMongooseOptionListeningPorts = "listening_ports";
 #pragma mark - Public Properties
 
 + (NSString *)versionString {
-  return [NSString stringWithFormat:@"%@.%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"], [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
+  NSString *version = [NSString stringWithFormat:@"%.1f", MongooseDaemonVersionNumber];
+  return version;
 }
 
 + (NSString *)mongooseVersionString {
