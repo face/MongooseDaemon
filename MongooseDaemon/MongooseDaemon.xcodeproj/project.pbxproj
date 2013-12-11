@@ -332,7 +332,7 @@
 				19FB6B071842832800C71880 /* Sources */,
 				19FB6B081842832800C71880 /* Frameworks */,
 				E2D85CA11846908400044FD9 /* CopyFiles */,
-				19BBA1941858B1F30001A27E /* ShellScript */,
+				19BBA1941858B1F30001A27E /* appledoc */,
 			);
 			buildRules = (
 			);
@@ -368,6 +368,7 @@
 				19FB6B7118428A7200C71880 /* Sources */,
 				19FB6B7218428A7200C71880 /* Frameworks */,
 				E2D85CA3184690D600044FD9 /* CopyFiles */,
+				19BBA1961858E50C0001A27E /* appledoc */,
 			);
 			buildRules = (
 			);
@@ -483,18 +484,35 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		19BBA1941858B1F30001A27E /* ShellScript */ = {
+		19BBA1941858B1F30001A27E /* appledoc */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = appledoc;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"generating documentation\"\nif type appledoc &> /dev/null ; then\nappledoc -o ${SOURCE_ROOT}/Documents -h -p ${PRODUCT_NAME} -v ${CURRENT_PROJECT_VERSION} -c CIM --company-id com.CIM -i ${SOURCE_ROOT}/MongooseDaemon/MongooseDaemon.m ${SOURCE_ROOT}/MongooseDaemon\necho \"documentation installed\"\nelse\necho \"appledoc not installed\"\nexit 0\nfi\n\n";
+			shellScript = "echo \"generating documentation\"\nif type appledoc &> /dev/null ; then\nappledoc \\\n-o ${SOURCE_ROOT}/Documents \\\n-h \\\n-p ${PRODUCT_NAME} \\\n-v ${CURRENT_PROJECT_VERSION} \\\n-c CIM \\\n--company-id com.CIM \\\n--keep-undocumented-objects \\\n--keep-undocumented-members \\\n--logformat xcode \\\n--exit-threshold 2 \\\n${CONFIGURATION_BUILD_DIR}/include/${PRODUCT_NAME}\nelse\necho \"warning: appledoc not installed\"\nexit 0\nfi\n\n";
+			showEnvVarsInLog = 0;
+		};
+		19BBA1961858E50C0001A27E /* appledoc */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = appledoc;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"generating documentation\"\nif type appledoc &> /dev/null ; then\nappledoc \\\n-o ${SOURCE_ROOT}/Documents \\\n-h \\\n-p ${PRODUCT_NAME} \\\n-v ${CURRENT_PROJECT_VERSION} \\\n-c CIM \\\n--company-id com.CIM \\\n--keep-undocumented-objects \\\n--keep-undocumented-members \\\n--logformat xcode \\\n--exit-threshold 2 \\\n${CONFIGURATION_BUILD_DIR}/include/${PRODUCT_NAME}\nelse\necho \"warning: appledoc not installed\"\nexit 0\nfi\n\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
