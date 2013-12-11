@@ -332,6 +332,7 @@
 				19FB6B071842832800C71880 /* Sources */,
 				19FB6B081842832800C71880 /* Frameworks */,
 				E2D85CA11846908400044FD9 /* CopyFiles */,
+				19BBA1941858B1F30001A27E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -480,6 +481,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		19BBA1941858B1F30001A27E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"generating documentation\"\nif type appledoc &> /dev/null ; then\nappledoc -o ${SOURCE_ROOT}/Documents -h -p ${PRODUCT_NAME} -v ${CURRENT_PROJECT_VERSION} -c CIM --company-id com.CIM -i ${SOURCE_ROOT}/MongooseDaemon/MongooseDaemon.m ${SOURCE_ROOT}/MongooseDaemon\necho \"documentation installed\"\nelse\necho \"appledoc not installed\"\nexit 0\nfi\n\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		19FB6B071842832800C71880 /* Sources */ = {
