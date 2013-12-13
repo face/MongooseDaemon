@@ -496,7 +496,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"generating documentation\"\nif type appledoc &> /dev/null ; then\n  appledoc \\\n  --output                      ${SOURCE_ROOT}/../Documents \\\n  --create-html \\\n  --project-name                ${PRODUCT_NAME} \\\n  --project-version             ${CURRENT_PROJECT_VERSION} \\\n  --project-company             CIM \\\n  --company-id                  com.CIM \\\n  --no-repeat-first-par \\\n  --keep-undocumented-objects \\\n  --keep-undocumented-members \\\n  --logformat                   xcode \\\n  --exit-threshold              2 \\\n  ${CONFIGURATION_BUILD_DIR}/include/${PRODUCT_NAME}\nelse\n  echo \"warning: appledoc not installed\"\nfi\n\n";
+			shellScript = "echo \"generating documentation\"\nif type appledoc &> /dev/null ; then\n  appledoc \\\n  --output                      ${SOURCE_ROOT} \\\n  --create-html \\\n  --project-name                ${PRODUCT_NAME} \\\n  --project-version             ${CURRENT_PROJECT_VERSION} \\\n  --project-company             CIM \\\n  --company-id                  com.CIM \\\n  --no-repeat-first-par \\\n  --keep-undocumented-objects \\\n  --keep-undocumented-members \\\n  --logformat                   xcode \\\n  --exit-threshold              2 \\\n  ${CONFIGURATION_BUILD_DIR}/include/${PRODUCT_NAME}\nelse\n  echo \"warning: appledoc not installed\"\nfi\n\n";
 			showEnvVarsInLog = 0;
 		};
 		19BBA1961858E50C0001A27E /* appledoc */ = {

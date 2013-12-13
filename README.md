@@ -13,8 +13,6 @@ a BSD style license. More information on
 mongoose can be found at the [project's
 github](https://github.com/valenok/mongoose).
 
-Documentation for `MongooseDaemon` can be found [here](/Documents/index.html).
-
 ##Usage
 
 As of version 1.1, MongooseDaemon is now compiled into a static library for iOS projects and into a framework for Mac OS projects and is meant to be included as a subproject in your workspace.
