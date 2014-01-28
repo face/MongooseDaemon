@@ -22,4 +22,6 @@ DerivedData
 # CocoaPods
 Pods
 
+# appledoc
+docset-installed.txt
 

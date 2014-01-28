@@ -11,43 +11,13 @@
 
 @interface MongooseDaemon (MongooseCallbacks)
 
-// Called when mongoose has received new HTTP request.
-int begin_request(struct mg_connection *);
+// called on HTTP errors, should return MG_PROCESSED or MG_NOT_PROCESSED
+int http_error_handler(struct mg_connection *connection);
 
-// Called when mongoose has finished processing request.
-void end_request(const struct mg_connection *, int reply_status_code);
+// called on each request, should return MG_REQUEST_PROCESSED, MG_REQUEST_NOT_PROCESSED, or MG_REQUEST_CALL_AGAIN
+int request_handler(struct mg_connection *connection);
 
-// Called when mongoose is about to log a message.
-int log_message(const struct mg_connection *, const char *message);
-
-// Called when mongoose initializes SSL library.
-int init_ssl(void *ssl_context, void *user_data);
-
-// Called when websocket request is received, before websocket handshake.
-int websocket_connect(const struct mg_connection *);
-
-// Called when websocket handshake is successfully completed, and
-// connection is ready for data exchange.
-void websocket_ready(struct mg_connection *);
-
-// Called when data frame has been received from the client.
-int websocket_data(struct mg_connection *, int bits, char *data, size_t data_len);
-
-// Called when mongoose tries to open a file.
-const char *open_file(const struct mg_connection *, const char *path, size_t *data_len);
-
-// Called when mongoose is about to serve Lua server page
-void init_lua(struct mg_connection *, void *lua_context);
-
-// Called when mongoose has uploaded a file to a temporary directory
-void upload(struct mg_connection *, const char *file_name);
-
-// Called at the beginning of mongoose's thread execution in the context of
-// that thread.
-void thread_start(void *user_data, void **conn_data);
-
-// Called when mongoose's thread is about to terminate.
-void thread_stop(void *user_data, void **conn_data);
-
+// called on each request, should return MG_AUTH_OK or MG_AUTH_FAIL
+int auth_handler(struct mg_connection *connection);
 
 @end

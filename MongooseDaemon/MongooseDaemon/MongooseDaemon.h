@@ -75,18 +75,9 @@
 @property (nonatomic, strong) NSString *documentRoot;
 
 /**
- An array of NSNumber boxed integers definight the ports on which Mongoose will listen for connections. Defaults to 8080. 
+ An NSInteger defining the port on which Mongoose will listen for connections. Defaults to 8080.
  
  @warning Cannot be empty, can only contain valid port numbers.
- @warning If the HTTP server is already running, this property will return without changing the value of the property.
- @see -listeningPort
- */
-@property (nonatomic, strong) NSArray *listeningPorts;
-
-/**
- This is a convenience method for getting/setting a single port. It uses listeningPorts underneath.
- 
- @see -listeningPorts
  */
 @property (nonatomic, assign) NSInteger listeningPort;
 
@@ -127,24 +118,6 @@
  @param responseData OUT A pointer to the response data
  */
 - (NSHTTPURLResponse *)mongooseDaemon:(MongooseDaemon *)daemon customResponseForRequest:(NSURLRequest *)request withResponseData:(NSData *__autoreleasing *)responseData;
-
-/**
- This delegate method is called when Mongoose completes a request and provides the status code. It is for informational purposes only.
- 
- @param daemon A pointer to the MongooseDaemon instance calling the delegate
- @param request The NSURLRequest completed
- @param statusCode The statusCode for the completed request
- */
-- (void)mongooseDaemon:(MongooseDaemon *)daemon didCompleteRequest:(NSURLRequest *)request withStatusCode:(NSInteger)statusCode;
-
-/**
- This delegate method is called before Mongoose logs a message to the error log.
- 
- @return A BOOL indicating if Mongoose should log the message in its own error log
- @param daemon A pointer to the MongooseDaemon instance calling the delegate
- @param message The error message to be logged
- */
-- (BOOL)mongooseDaemon:(MongooseDaemon *)daemon shouldLogMessage:(NSString *)message;
 
 
 @end

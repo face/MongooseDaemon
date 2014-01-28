@@ -80,6 +80,9 @@
 
 /* Begin PBXFileReference section */
 		190D72B41843CD5400D0A555 /* MongooseDaemon_MongooseCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MongooseDaemon_MongooseCallbacks.h; sourceTree = "<group>"; };
+		193861DC185698A200EFEDED /* MongooseDaemonVersion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MongooseDaemonVersion.h; path = MongooseDaemon/MongooseDaemonVersion.h; sourceTree = SOURCE_ROOT; };
+		193861DD18569E6C00EFEDED /* MongooseDaemon-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MongooseDaemon-Info.plist"; sourceTree = "<group>"; };
+		1947CAAE185759B000C7CDE3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		19FB6B0B1842832800C71880 /* libMongooseDaemon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMongooseDaemon.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		19FB6B111842832800C71880 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		19FB6B161842832800C71880 /* MongooseDaemon-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MongooseDaemon-Prefix.pch"; sourceTree = "<group>"; };
@@ -207,6 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				19FB6B6C1842846100C71880 /* mongoose */,
+				193861DC185698A200EFEDED /* MongooseDaemonVersion.h */,
 				19FB6B681842843900C71880 /* MongooseDaemon.h */,
 				190D72B41843CD5400D0A555 /* MongooseDaemon_MongooseCallbacks.h */,
 				19FB6B691842843900C71880 /* MongooseDaemon.m */,
@@ -218,6 +222,8 @@
 		19FB6B151842832800C71880 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				193861DD18569E6C00EFEDED /* MongooseDaemon-Info.plist */,
+				1947CAAD185759B000C7CDE3 /* InfoPlist.strings */,
 				19FB6B161842832800C71880 /* MongooseDaemon-Prefix.pch */,
 			);
 			name = "Supporting Files";
@@ -326,6 +332,7 @@
 				19FB6B071842832800C71880 /* Sources */,
 				19FB6B081842832800C71880 /* Frameworks */,
 				E2D85CA11846908400044FD9 /* CopyFiles */,
+				19BBA1941858B1F30001A27E /* appledoc */,
 			);
 			buildRules = (
 			);
@@ -361,6 +368,7 @@
 				19FB6B7118428A7200C71880 /* Sources */,
 				19FB6B7218428A7200C71880 /* Frameworks */,
 				E2D85CA3184690D600044FD9 /* CopyFiles */,
+				19BBA1961858E50C0001A27E /* appledoc */,
 			);
 			buildRules = (
 			);
@@ -412,7 +420,7 @@
 		19FB6B031842832800C71880 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = CIM;
 				TargetAttributes = {
 					19FB6B1D1842832800C71880 = {
@@ -474,6 +482,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		19BBA1941858B1F30001A27E /* appledoc */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = appledoc;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"generating documentation\"\nif type appledoc &> /dev/null ; then\n  appledoc \\\n  --output                      ${SOURCE_ROOT} \\\n  --create-html \\\n  --project-name                ${PRODUCT_NAME} \\\n  --project-version             ${CURRENT_PROJECT_VERSION} \\\n  --project-company             CIM \\\n  --company-id                  com.CIM \\\n  --no-repeat-first-par \\\n  --keep-undocumented-objects \\\n  --keep-undocumented-members \\\n  --logformat                   xcode \\\n  --exit-threshold              2 \\\n  ${CONFIGURATION_BUILD_DIR}/include/${PRODUCT_NAME}\nelse\n  echo \"warning: appledoc not installed\"\nfi\n\n";
+			showEnvVarsInLog = 0;
+		};
+		19BBA1961858E50C0001A27E /* appledoc */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = appledoc;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"generating documentation\"\nif type appledoc &> /dev/null ; then\n  appledoc \\\n  --output                      ${SOURCE_ROOT}/../Documents \\\n  --create-html \\\n  --project-name                ${PRODUCT_NAME} \\\n  --project-version             ${CURRENT_PROJECT_VERSION} \\\n  --project-company             CIM \\\n  --company-id                  com.CIM \\\n  --no-repeat-first-par \\\n  --keep-undocumented-objects \\\n  --keep-undocumented-members \\\n  --logformat                   xcode \\\n  --exit-threshold              2 \\\n  ${CONFIGURATION_BUILD_DIR}/include/${PRODUCT_NAME}\nelse\n  echo \"warning: appledoc not installed\"\nfi\n\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		19FB6B071842832800C71880 /* Sources */ = {
@@ -538,6 +579,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		1947CAAD185759B000C7CDE3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1947CAAE185759B000C7CDE3 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		19FB6B281842832800C71880 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -581,7 +630,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1.2;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -598,9 +647,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -620,7 +671,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1.2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -635,19 +686,20 @@
 				PRODUCT_NAME = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
 		19FB6B301842832800C71880 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
 				OTHER_CFLAGS = (
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				SDKROOT = iphoneos;
@@ -657,13 +709,13 @@
 		19FB6B311842832800C71880 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
 				OTHER_CFLAGS = (
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				SDKROOT = iphoneos;
@@ -713,10 +765,9 @@
 		19FB6B9518428A7200C71880 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 2;
+				DYLIB_CURRENT_VERSION = 1.2;
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
@@ -729,6 +780,7 @@
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				WRAPPER_EXTENSION = framework;
@@ -738,10 +790,9 @@
 		19FB6B9618428A7200C71880 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 2;
+				DYLIB_CURRENT_VERSION = 1.2;
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
@@ -750,6 +801,7 @@
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				WRAPPER_EXTENSION = framework;
@@ -759,7 +811,6 @@
 		19FB6BC918428FA600C71880 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
@@ -786,7 +837,6 @@
 		19FB6BCA18428FA600C71880 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
@@ -810,7 +860,6 @@
 		19FB6BCC18428FA600C71880 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MongooseDaemon.framework/Versions/A/MongooseDaemon";
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -836,7 +885,6 @@
 		19FB6BCD18428FA600C71880 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MongooseDaemon.framework/Versions/A/MongooseDaemon";
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -872,7 +920,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1.2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -887,19 +935,20 @@
 				PRODUCT_NAME = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Distribution;
 		};
 		587062661850D18B0078C746 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
 				OTHER_CFLAGS = (
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				SDKROOT = iphoneos;
@@ -909,10 +958,9 @@
 		587062671850D18B0078C746 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 2;
+				DYLIB_CURRENT_VERSION = 1.2;
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
@@ -921,6 +969,7 @@
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				WRAPPER_EXTENSION = framework;
@@ -948,7 +997,6 @@
 		587062691850D18B0078C746 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
@@ -972,7 +1020,6 @@
 		5870626A1850D18B0078C746 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MongooseDaemon.framework/Versions/A/MongooseDaemon";
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
