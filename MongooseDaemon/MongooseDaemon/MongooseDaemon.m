@@ -53,7 +53,7 @@ typedef NS_ENUM(NSUInteger, mongooseOptionIndex) {
 const NSUInteger kNumberOfSupportedOptions = 2;
 
 const char * kMongooseOptionDocumentRoot = "document_root";
-const char * kMongooseOptionListeningPorts = "listening_ports";
+const char * kMongooseOptionListeningPort = "listening_port";
 
 
 @interface MongooseDaemon ()
@@ -63,12 +63,11 @@ const char * kMongooseOptionListeningPorts = "listening_ports";
 @end
 
 @implementation MongooseDaemon {
-  struct mg_context *_ctx;
-  struct mg_callbacks _callbacks;
+  struct mg_server *_server;
 }
 
 @synthesize documentRoot = _documentRoot;
-@synthesize listeningPorts = _listeningPorts;
+@synthesize listeningPort = _listeningPort;
 
 - (id)init {
   self = [super init];
@@ -79,14 +78,6 @@ const char * kMongooseOptionListeningPorts = "listening_ports";
     self.queue = dispatch_queue_create([queueLabel UTF8String], NULL);
     dispatch_sync(self.queue, ^{
       CIMLog(logMongoose, @"[%@] created queue [%@]", self, self.queue);
-      
-      // Prepare callbacks structure.
-      memset(&_callbacks, 0, sizeof(_callbacks));
-      _callbacks.begin_request = &begin_request;
-      _callbacks.end_request = &end_request;
-      _callbacks.log_message = &log_message;
-      _callbacks.thread_start = &thread_start;
-      _callbacks.thread_stop = &thread_stop;
       
       // list available options and their defaults
       const char **options = mg_get_valid_option_names();
@@ -103,7 +94,7 @@ const char * kMongooseOptionListeningPorts = "listening_ports";
       CIMLog(logMongoose, @"Mongoose Options = %@", mongooseOptions);
       
       // set port and root defaults
-      _listeningPorts = @[@8080];
+      _listeningPort = 8080;
       _documentRoot = NSHomeDirectory();
       
     });
@@ -121,30 +112,43 @@ const char * kMongooseOptionListeningPorts = "listening_ports";
 
 - (void)start {
   dispatch_sync(self.queue, ^{
-    if (_ctx == NULL) {
-      
-      // List of options. Last element must be NULL.
-      // TODO: dynamically generate this array based on set parameters
-      //       ...or just set all options every time
-      const char *options[[self numberOfSupportedOptions] * 2 + 1];
-      NSUInteger i;
-      for (i = 0; i < [self numberOfSupportedOptions]; i++) {
-        options[i * 2] = [self nameOfOptionAtIndex:i];
-        options[i * 2 + 1] = [self valueOfOptionAtIndex:i];
-      }
-      options[i * 2] = NULL;
+    if (_server == NULL) {
       
       // start the web server
-      _ctx = mg_start(&_callbacks, (__bridge void *)(self), options);     // Start Mongoose serving thread
+      _server = mg_create_server((__bridge void *)self);
+      
+      // set supported options
+      NSUInteger i;
+      for (i = 0; i < [self numberOfSupportedOptions]; i++) {
+        CIMLog(logMongoose, @"%s = %s", [self nameOfOptionAtIndex:i], [self valueOfOptionAtIndex:i]);
+        mg_set_option(_server, [self nameOfOptionAtIndex:i], [self valueOfOptionAtIndex:i]);
+        CIMLog(logMongoose, @"%s ? %s", [self nameOfOptionAtIndex:i], mg_get_option(_server, [self nameOfOptionAtIndex:i]));
+      }
+      
+      // set callbacks
+      mg_set_http_error_handler(_server, &http_error_handler);
+      mg_set_request_handler(_server, &request_handler);
+      mg_set_auth_handler(_server, &auth_handler);
+      
+      [self poll];
+    }
+  });
+}
+
+- (void)poll {
+  dispatch_async(self.queue, ^{
+    if (_server) {
+      mg_poll_server(_server, 100);
+      [self poll];
     }
   });
 }
 
 - (void)stop {
   dispatch_sync(self.queue, ^{
-    if (_ctx != NULL) {
-      mg_stop(_ctx);
-      _ctx = NULL;
+    if (_server != NULL) {
+      mg_destroy_server(&_server);
+      _server = NULL;
     }
   });
 }
@@ -158,48 +162,37 @@ const char * kMongooseOptionListeningPorts = "listening_ports";
 }
 
 + (NSString *)mongooseVersionString {
-  return [NSString stringWithUTF8String:mg_version()];
+  return [NSString stringWithUTF8String:MONGOOSE_VERSION];
 }
 
 - (BOOL)isRunning {
   __block BOOL running;
   dispatch_sync(self.queue, ^{
-    running = (_ctx != NULL);
+    running = (_server != NULL);
   });
   return running;
 }
 
-- (void)setListeningPorts:(NSArray *)listeningPorts {
-  NSAssert(listeningPorts.count > 0, @"listeningPorts array cannot be empty!");
-  for (id object in listeningPorts) {
-    NSAssert([object isKindOfClass:[NSNumber class]], @"listeningPorts must be NSNumbers!");
-  }
+- (void)setListeningPort:(NSInteger)port {
   dispatch_sync(self.queue, ^{
-    if (_ctx == NULL) {
-      _listeningPorts = [listeningPorts copy];
+    _listeningPort = port;
+    if (_server != NULL) {
+      mg_set_listening_socket(_server, (int)_listeningPort);
     }
   });
 }
 
-- (NSArray *)listeningPorts {
-  __block NSArray *listeningPorts;
-  dispatch_sync(self.queue, ^{
-    listeningPorts = [_listeningPorts copy];
-  });
-  return listeningPorts;
-}
-
-- (void)setListeningPort:(NSInteger)port {
-  [self setListeningPorts:@[@(port)]];
-}
-
 - (NSInteger)listeningPort {
-  return [(NSNumber *)self.listeningPorts[0] integerValue];
+  __block NSInteger listeningPort;
+  dispatch_sync(self.queue, ^{
+    listeningPort = _listeningPort;
+  });
+  return listeningPort;
 }
 
 - (void)setDocumentRoot:(NSString *)documentRoot {
   dispatch_sync(self.queue, ^{
-    if (_ctx == NULL) {
+    if (_server == NULL) {
       _documentRoot = [documentRoot copy];
     }
   });
@@ -226,7 +219,7 @@ const char * kMongooseOptionListeningPorts = "listening_ports";
       return kMongooseOptionDocumentRoot;
       
     case mongooseOptionIndexListeningPort:
-      return kMongooseOptionListeningPorts;
+      return kMongooseOptionListeningPort;
       
     default:
       NSAssert1(false, @"Unexpected option index [%ld]", (long)index);
@@ -240,7 +233,7 @@ const char * kMongooseOptionListeningPorts = "listening_ports";
       return [_documentRoot UTF8String];
       
     case mongooseOptionIndexListeningPort:
-      return [[_listeningPorts componentsJoinedByString:@","] UTF8String];
+      return [[NSString stringWithFormat:@"%ld", (long)_listeningPort] UTF8String];
       
     default:
       NSAssert1(false, @"Unexpected option index [%ld]", (long)index);
@@ -252,239 +245,82 @@ const char * kMongooseOptionListeningPorts = "listening_ports";
 @end
 
 
-
 @implementation MongooseDaemon (MongooseCallbacks)
 
-// Called when mongoose has received new HTTP request.
-int begin_request(struct mg_connection *connection)
+// called on HTTP errors, should return MG_PROCESSED or MG_NOT_PROCESSED
+int http_error_handler(struct mg_connection *connection)
 {
-  CIMLog(logMongoose, @"begin_request");
-  if (connection == NULL) {
-    return 0;
-  }
-  struct mg_request_info *requestInfo = mg_get_request_info(connection);
+  CIMLog(logMongoose, @"http_error_handler status = %d", connection->status_code);
+  return MG_ERROR_NOT_PROCESSED;
+}
+
+// called on each request, should return MG_REQUEST_PROCESSED, MG_REQUEST_NOT_PROCESSED, or MG_REQUEST_CALL_AGAIN
+int request_handler(struct mg_connection *connection)
+{
+  CIMLog(logMongoose, @"request_handler uri = %s", connection->uri);
   
-  MongooseDaemon *daemon = (__bridge MongooseDaemon *)requestInfo->user_data;
+  MongooseDaemon *daemon = (__bridge MongooseDaemon *)connection->server_param;
   NSHTTPURLResponse *response = nil;
   NSData *responseData = nil;
   if ([daemon.delegate respondsToSelector:@selector(mongooseDaemon:customResponseForRequest:withResponseData:)]) {
-    NSURLRequest *request = [MongooseDaemon requestFromMgRequestInfo:requestInfo];
+    NSURLRequest *request = requestFromMgConnection(connection);
     response = [daemon.delegate mongooseDaemon:daemon customResponseForRequest:request withResponseData:&responseData];
-    if (response) {
-      NSMutableString *rawHTTPMessage = [[NSMutableString alloc] init];
-      
-      // STATUS LINE
-      // TODO: extract http version string from response
-      NSString *status = [NSString stringWithFormat:@"HTTP/1.1 %ld %@\r\n", (long)response.statusCode, [MongooseDaemon responseReasonPhraseForStatusCode:response.statusCode]];
-      [rawHTTPMessage appendString:status];
-      
-      // HEADERS
-      NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:[response allHeaderFields]];
-      // always set content-length
-      headers[@"Content-Length"] = @(responseData.length);
-      for (NSString *name in headers) {
-        NSString *headerString = [NSString stringWithFormat:@"%@: %@\r\n", name, headers[name]];
-        [rawHTTPMessage appendString:headerString];
-      }
-      
-      // DATA
-      if (responseData.length) {
-        // insert blank line before data
-        [rawHTTPMessage appendString:@"\r\n"];
-        [rawHTTPMessage appendFormat:@"%s", responseData.bytes];
-      }
-      
-      CIMLog(logMongoose, @"rawHTTPMessage:\n%@", rawHTTPMessage);
-      mg_printf(connection, "%s", [rawHTTPMessage UTF8String]);
-      
-      return 1;
-      
-    } else {
-      return 0;
-    }
   }
-  
-  return (response != nil);
+  return sendResponse(connection, response, responseData);
 }
 
-// Called when mongoose has finished processing request.
-void end_request(const struct mg_connection *connection, int reply_status_code)
+// called on each request, should return MG_AUTH_OK or MG_AUTH_FAIL
+int auth_handler(struct mg_connection *connection)
 {
-  CIMLog(logMongoose, @"end_request reply_status_code [%d]", reply_status_code);
-  if (connection == NULL) {
-    return;
-  }
-  struct mg_request_info *requestInfo = mg_get_request_info(connection);
-  MongooseDaemon *daemon = (__bridge MongooseDaemon *)requestInfo->user_data;
-  if ([daemon.delegate respondsToSelector:@selector(mongooseDaemon:didCompleteRequest:withStatusCode:)]) {
-    NSURLRequest *request = [MongooseDaemon requestFromMgRequestInfo:requestInfo];
-    [daemon.delegate mongooseDaemon:daemon didCompleteRequest:request withStatusCode:(NSInteger)reply_status_code];
-  }
-}
-
-// Called when mongoose is about to log a message.
-int log_message(const struct mg_connection *connection, const char *message)
-{
-  CIMLog(logMongoose, @"log_message message [%s]", message);
-  if (connection == NULL) {
-    return 0;
-  }
-  BOOL log = YES;
-  struct mg_request_info *requestInfo = mg_get_request_info(connection);
-  MongooseDaemon *daemon = (__bridge MongooseDaemon *)requestInfo->user_data;
-  if ([daemon.delegate respondsToSelector:@selector(mongooseDaemon:shouldLogMessage:)]) {
-    log = [daemon.delegate mongooseDaemon:daemon shouldLogMessage:[NSString stringWithUTF8String:message]];
-  }
-  return !log;
-}
-
-// Called at the beginning of mongoose's thread execution in the context of
-// that thread.
-void thread_start(void *user_data, void **conn_data)
-{
-}
-
-// Called when mongoose's thread is about to terminate.
-void thread_stop(void *user_data, void **conn_data)
-{
+  CIMLog(logMongoose, @"auth_handler uri = %s", connection->uri);
+  return MG_AUTH_OK;
 }
 
 
-#pragma mark - Private helper methods
+#pragma mark - Private Helper Methods
 
 // extract an NSURLRequest from the mg_request_info object
-+ (NSURLRequest *)requestFromMgRequestInfo:(const struct mg_request_info *)requestInfo {
-  if (requestInfo == NULL) {
+NSURLRequest *requestFromMgConnection(struct mg_connection *connection)
+{
+  if (connection == NULL) {
     return nil;
   }
   
-  NSString *uri = [NSString stringWithUTF8String:requestInfo->uri];
-  if (requestInfo->query_string != NULL) {
-    uri = [uri stringByAppendingFormat:@"?%s", requestInfo->query_string];
+  NSString *uri = [NSString stringWithUTF8String:connection->uri];
+  if (connection->query_string != NULL) {
+    uri = [uri stringByAppendingFormat:@"?%s", connection->query_string];
   }
   NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:uri]];
-  mutableRequest.HTTPMethod = [NSString stringWithUTF8String:requestInfo->request_method];
+  mutableRequest.HTTPMethod = [NSString stringWithUTF8String:connection->request_method];
   
-  for (int i = 0; i < requestInfo->num_headers; i++) {
-    struct mg_header header = requestInfo->http_headers[i];
+  for (int i = 0; i < connection->num_headers; i++) {
+    struct mg_header header = connection->http_headers[i];
     [mutableRequest setValue:[NSString stringWithUTF8String:header.value] forHTTPHeaderField:[NSString stringWithUTF8String:header.name]];
   }
   
   return [mutableRequest copy];
 }
 
-+ (NSString *)responseReasonPhraseForStatusCode:(NSInteger)statusCode {
-  NSInteger responseCategory = statusCode / 100;
+int sendResponse(struct mg_connection *connection, NSHTTPURLResponse *response, NSData *responseData)
+{
+  if (connection == NULL || !response) return MG_REQUEST_NOT_PROCESSED;
   
-  switch (responseCategory) {
-    case 1:
-      switch (statusCode) {
-        case 100:
-          return @"Switching Protocols";
-        case 101:
-          return @"Continue";
-        default:
-          return @"Informational";
-      }
-    case 2:
-      switch (statusCode) {
-        case 200:
-          return @"OK";
-        case 201:
-          return @"Created";
-        case 202:
-          return @"Accepted";
-        case 203:
-          return @"Non-Authoritative Information";
-        case 204:
-          return @"No Content";
-        case 205:
-          return @"Reset Content";
-        case 206:
-          return @"Partial Content";
-        default:
-          return @"Success";
-      }
-    case 3:
-      switch (statusCode) {
-        case 300:
-          return @"Multiple Choices";
-        case 301:
-          return @"Moved Permanently";
-        case 302:
-          return @"Found";
-        case 303:
-          return @"See Other";
-        case 304:
-          return @"Not Modified";
-        case 305:
-          return @"Use Proxy";
-        case 307:
-          return @"Temporary Redirect";
-        default:
-          return @"Redirection";
-      }
-    case 4:
-      switch (statusCode) {
-        case 400:
-          return @"Bad Request";
-        case 401:
-          return @"Unauthorized";
-        case 402:
-          return @"Payment Required";
-        case 403:
-          return @"Forbidden";
-        case 404:
-          return @"Not Found";
-        case 405:
-          return @"Method Not Allowed";
-        case 406:
-          return @"Not Acceptable";
-        case 407:
-          return @"Proxy Authentication Required";
-        case 408:
-          return @"Request Time-out";
-        case 409:
-          return @"Conflict";
-        case 410:
-          return @"Gone";
-        case 411:
-          return @"Length Required";
-        case 412:
-          return @"Precondition Failed";
-        case 413:
-          return @"Request Entity Too Large";
-        case 414:
-          return @"Request-URI Too Large";
-        case 415:
-          return @"Unsupported Media Type";
-        case 416:
-          return @"Requested range not satisfiable";
-        case 417:
-          return @"Expectation Failed";
-        default:
-          return @"Client Error";
-      }
-    case 5:
-      switch (statusCode) {
-        case 500:
-          return @"Internal Server Error";
-        case 501:
-          return @"Not Implemented";
-        case 502:
-          return @"Bad Gateway";
-        case 503:
-          return @"Service Unavailable";
-        case 504:
-          return @"Gateway Time-out";
-        case 505:
-          return @"HTTP Version not supported";
-        default:
-          return @"Server Error";
-      }
-    default:
-      return @"Unknown Response";
+  // STATUS
+  mg_send_status(connection, response.statusCode);
+  
+  // HEADERS
+  NSMutableDictionary *headers = [[response allHeaderFields] mutableCopy];
+  headers[@"Content-Length"] = @(responseData.length);
+  for (NSString *name in headers) {
+    mg_send_header(connection, [name UTF8String], [[headers[name] stringValue] UTF8String]);
   }
+  
+  // DATA
+  if (responseData.length) {
+    mg_send_data(connection, responseData.bytes, responseData.length);
+  }
+  
+  return MG_REQUEST_PROCESSED;
 }
 
 

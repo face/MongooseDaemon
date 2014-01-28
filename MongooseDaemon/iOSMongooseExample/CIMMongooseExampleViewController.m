@@ -248,13 +248,5 @@ NSString * const kMongooseExampleTableViewLabelCellIdentifier = @"kMongooseExamp
   return response;
 }
 
-- (void)mongooseDaemon:(MongooseDaemon *)daemon didCompleteRequest:(NSURLRequest *)request withStatusCode:(NSInteger)statusCode {
-  NSLog(@"%s: %@ %ld", __PRETTY_FUNCTION__, [request.URL absoluteString], (long)statusCode);
-}
-
-- (BOOL)mongooseDaemon:(MongooseDaemon *)daemon shouldLogMessage:(NSString *)message {
-  NSLog(@"%s: %@", __PRETTY_FUNCTION__, message);
-  return YES;
-}
 
 @end

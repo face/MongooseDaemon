@@ -420,7 +420,7 @@
 		19FB6B031842832800C71880 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = CIM;
 				TargetAttributes = {
 					19FB6B1D1842832800C71880 = {
@@ -647,6 +647,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -692,13 +693,13 @@
 		19FB6B301842832800C71880 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
 				OTHER_CFLAGS = (
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				SDKROOT = iphoneos;
@@ -708,13 +709,13 @@
 		19FB6B311842832800C71880 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
 				OTHER_CFLAGS = (
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				SDKROOT = iphoneos;
@@ -764,7 +765,6 @@
 		19FB6B9518428A7200C71880 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1.2;
@@ -780,6 +780,7 @@
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				WRAPPER_EXTENSION = framework;
@@ -789,7 +790,6 @@
 		19FB6B9618428A7200C71880 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1.2;
@@ -801,6 +801,7 @@
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				WRAPPER_EXTENSION = framework;
@@ -810,7 +811,6 @@
 		19FB6BC918428FA600C71880 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
@@ -837,7 +837,6 @@
 		19FB6BCA18428FA600C71880 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
@@ -861,7 +860,6 @@
 		19FB6BCC18428FA600C71880 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MongooseDaemon.framework/Versions/A/MongooseDaemon";
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -887,7 +885,6 @@
 		19FB6BCD18428FA600C71880 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MongooseDaemon.framework/Versions/A/MongooseDaemon";
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -945,13 +942,13 @@
 		587062661850D18B0078C746 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MongooseDaemon/MongooseDaemon-Prefix.pch";
 				OTHER_CFLAGS = (
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				SDKROOT = iphoneos;
@@ -961,7 +958,6 @@
 		587062671850D18B0078C746 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1.2;
@@ -973,6 +969,7 @@
 					"-Wall",
 					"-Wextra",
 					"-Wno-unused-parameter",
+					"-Wno-shorten-64-to-32",
 				);
 				PRODUCT_NAME = MongooseDaemon;
 				WRAPPER_EXTENSION = framework;
@@ -1000,7 +997,6 @@
 		587062691850D18B0078C746 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
@@ -1024,7 +1020,6 @@
 		5870626A1850D18B0078C746 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MongooseDaemon.framework/Versions/A/MongooseDaemon";
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
