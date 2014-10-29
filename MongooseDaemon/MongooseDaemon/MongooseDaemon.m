@@ -316,9 +316,7 @@ int sendResponse(struct mg_connection *connection, NSHTTPURLResponse *response, 
   }
   
   // DATA
-  if (responseData.length) {
-    mg_send_data(connection, responseData.bytes, responseData.length);
-  }
+  mg_send_data(connection, responseData.bytes, responseData.length);
   
   return MG_REQUEST_PROCESSED;
 }
